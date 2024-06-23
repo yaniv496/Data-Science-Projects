@@ -82,7 +82,7 @@ def main():
         ita_list.append(row['iata'])
 
     print (ita_list)
-    ref_index1 = st.text_input("\nEnter the number of the Reference airport: ", '')
+    
     ref_index = int(input("\nEnter the number of the Reference airport: "))
     ref_iata = airport_data.iloc[ref_index]['iata']
 
