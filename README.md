@@ -1,5 +1,9 @@
 # Data-Science-Projects
+
+https://colab.research.google.com/drive/1hPBZH7RnyicEW5doXAEfeogEutuxmo94
+
 Data Science Projects - Bar Ilan University
+Yaniv Levy
 python flight project:
 	Number of Flight per days: compare amount of flights in both directions between two locations
 	1. set 1 reference airport location 
@@ -63,7 +67,6 @@ flight_counts -  ORD to BCN :  7
 flight_counts -  ORD to VIE :  2
 flight_counts -  ORD to ATL :  89
 flight_counts -  ORD to LAX :  100
-flight_counts -  ORD to ORD :  1
 flight_counts -  ORD to DFW :  71
 flight_counts -  ORD to DEN :  50
 flight_counts -  ORD to JFK :  58
@@ -87,7 +90,6 @@ flight_counts -  BCN to ORD :  7
 flight_counts -  VIE to ORD :  2
 flight_counts -  ATL to ORD :  74
 flight_counts -  LAX to ORD :  100
-flight_counts -  ORD to ORD :  1
 flight_counts -  DFW to ORD :  79
 flight_counts -  DEN to ORD :  54
 flight_counts -  JFK to ORD :  48

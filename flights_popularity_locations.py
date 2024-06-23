@@ -70,81 +70,93 @@ def main():
   print("CSV file 'airports.csv' has been created.")
 
 
-  #load csv data
+  
 
 
-  airport_data = load_airport_data()
-  ita_list =[]
-  print("Select Reference Airport to compare:") # Departure
-  for idx, row in airport_data.iterrows():
-      print(f"{idx}. {row['airport']} ({row['iata']}) - {row['city']}")
-      ita_list.append(row['iata'])
+    key_input = ''
+    while key_input != 'q':
+        #load csv data
+        airport_data = load_airport_data()
+        ita_list =[]
+        print("Select Reference Airport to compare:") # Departure
+        for idx, row in airport_data.iterrows():
+            print(f"{idx}. {row['airport']} ({row['iata']}) - {row['city']}")
+            ita_list.append(row['iata'])
 
-  print (ita_list)
-  #ref_index1 = st.text_input("\nEnter the number of the Reference airport: ", '')
-  ref_index = int(input("\nEnter the number of the Reference airport: "))
-  ref_iata = airport_data.iloc[ref_index]['iata']
+        print (ita_list)
+        ref_index1 = st.text_input("\nEnter the number of the Reference airport: ", '')
+        ref_index = int(input("\nEnter the number of the Reference airport: "))
+        ref_iata = airport_data.iloc[ref_index]['iata']
 
-  flight_date = input("\nEnter the flight date (YYYY-MM-DD): ")
-  try:
-      datetime.strptime(flight_date, '%Y-%m-%d')
-  except ValueError:
-      print("Incorrect date format, should be YYYY-MM-DD")
-      return
-  # print("\nSelect Arrival Airport:")
-  # for idx, row in airport_data.iterrows():
-  #     print(f"{idx}. {row['airport']} ({row['iata']}) - {row['city']}")
-  ref_iata_to_ita = {}
-  uta_to_ref_iata = {}
-  print('Ref to all locations List: \n')
-  for ita in ita_list:
-      flight_data_all = get_flight_info(ref_iata, ita,flight_date)
-      flight_count = len(flight_data_all['data'])
-      print('flight_counts -  ' + ref_iata + ' to ' + ita + ' :  ' + str(flight_count))
-      #ref_iata_to_ita = {ita:flight_count}
+        flight_date = input("\nEnter the flight date (YYYY-MM-DD): ")
+        try:
+            datetime.strptime(flight_date, '%Y-%m-%d')
+        except ValueError:
+            print("Incorrect date format, should be YYYY-MM-DD")
+            return
+        # print("\nSelect Arrival Airport:")
+        # for idx, row in airport_data.iterrows():
+        #     print(f"{idx}. {row['airport']} ({row['iata']}) - {row['city']}")
+        ref_iata_to_ita = {}
+        uta_to_ref_iata = {}
+        print('Ref to all locations List: \n')
+        max_flights = 0
+        flight_detail =''
+        for ita in ita_list:
+            if ita != ref_iata:
+                flight_data_all = get_flight_info(ref_iata, ita,flight_date)
+                flight_count = len(flight_data_all['data'])
+                if flight_count > max_flights:
+                    max_flights = flight_count
+                    flight_detail = ref_iata + ' to ' + ita
 
-  print('\n all locations to Ref List: \n')
-  for ita in ita_list:
-      flight_data_all = get_flight_info(ita,ref_iata,flight_date)
-      flight_count = len(flight_data_all['data'])
-      print('flight_counts -  ' + ita + ' to ' + ref_iata + ' :  ' + str(flight_count))
-      #uta_to_ref_iata = {ita:flight_count}
-
-  arr_index = int(input("\nEnter the number of the arrival airport: "))
-  arr_iata = airport_data.iloc[arr_index]['iata']
-
+                print('flight_counts -  ' + ref_iata + ' to ' + ita + ' :  ' + str(flight_count))
 
 
-  flight_data = get_flight_info(ref_iata, arr_iata)
-  flight_count = len(flight_data['data'])
-  print('flight_counts -  ' + ref_iata + ' to ' + arr_iata + ' :  ' + str(flight_count))
-  if 'error' in flight_data:
-      print(f"Error: {flight_data['error']['info']}")
-  else:
-      print("\nFlight Information:")
-      for flight in flight_data['data']:
-          print(f"Flight: {flight['flight']['iata']}, Airline: {flight['airline']['name']}, Status: {flight['flight_status']}")
-          print(f"Departure: {flight['departure']['airport']} at {flight['departure']['scheduled']}")
-          print(f"Arrival: {flight['arrival']['airport']} at {flight['arrival']['scheduled']}")
-          print("-----")
+        print('\n all locations to Ref List: \n')
+        for ita in ita_list:
+            if ita != ref_iata:
+                flight_data_all = get_flight_info(ita,ref_iata,flight_date)
+                flight_count = len(flight_data_all['data'])
+                if flight_count > max_flights:
+                    max_flights = flight_count
+                    flight_detail = ita + ' to ' + ref_iata
+                print('flight_counts -  ' + ita + ' to ' + ref_iata + ' :  ' + str(flight_count))
+
+        arr_index = int(input("\nFor flights details Enter the number of airports from the list : "))
+        arr_iata = airport_data.iloc[arr_index]['iata']
 
 
-  flight_data2 = get_flight_info(arr_iata,ref_iata)
-  flight_count2 = len(flight_data2['data'])
-  print('flight_counts -  ' + arr_iata + ' to ' + ref_iata     + ' :  ' + str(flight_count2))
-  if 'error' in flight_data:
-      print(f"Error: {flight_data['error']['info']}")
-  else:
-      print("\nFlight Information:")
-      for flight in flight_data2['data']:
-          print(f"Flight: {flight['flight']['iata']}, Airline: {flight['airline']['name']}, Status: {flight['flight_status']}")
-          print(f"Departure: {flight['departure']['airport']} at {flight['departure']['scheduled']}")
-          print(f"Arrival: {flight['arrival']['airport']} at {flight['arrival']['scheduled']}")
-          print("-----")
+        flight_data = get_flight_info(ref_iata, arr_iata, flight_date)
+        flight_count = len(flight_data['data'])
+        print('flight_counts -  ' + ref_iata + ' to ' + arr_iata + ' :  ' + str(flight_count))
+        if 'error' in flight_data:
+            print(f"Error: {flight_data['error']['info']}")
+        else:
+            print("\nFlight Information:")
+            for flight in flight_data['data']:
+                print(f"Flight: {flight['flight']['iata']}, Airline: {flight['airline']['name']}, Status: {flight['flight_status']}")
+                print(f"Departure: {flight['departure']['airport']} at {flight['departure']['scheduled']}")
+                print(f"Arrival: {flight['arrival']['airport']} at {flight['arrival']['scheduled']}")
+                print("-----")
 
-  print('end')
+        flight_data2 = get_flight_info(arr_iata,ref_iata, flight_date)
+        flight_count2 = len(flight_data2['data'])
+        print('flight_counts -  ' + arr_iata + ' to ' + ref_iata     + ' :  ' + str(flight_count2))
+        if 'error' in flight_data:
+            print(f"Error: {flight_data['error']['info']}")
+        else:
+            print("\nFlight Information:")
+            for flight in flight_data2['data']:
+                print(f"Flight: {flight['flight']['iata']}, Airline: {flight['airline']['name']}, Status: {flight['flight_status']}")
+                print(f"Departure: {flight['departure']['airport']} at {flight['departure']['scheduled']}")
+                print(f"Arrival: {flight['arrival']['airport']} at {flight['arrival']['scheduled']}")
+                print("-----")
 
+        print('The Most poplar flight root path  for ' + str(flight_date) + ' is: ' + flight_detail + ' with '  + str(max_flights) + ' flights' )
+        print( '\nHave a good flight')
+
+        key_input = input("\n Stop searching flights - > press q else press Enter ")
+        
 if __name__ == '__main__':
     main()
-
-!pip install -q streamlit
